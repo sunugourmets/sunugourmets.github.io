@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<!-- Ceci rend le site utilisable sur mobile : sans cette ligne, un téléphone
+     afficherait le site comme s'il était sur un grand écran, en tout petit. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUNU GOUR'METS — Cuisine sénégalaise traditionnelle</title>
+
+<!-- On importe deux polices depuis Google Fonts : une pour les titres
+     (avec du caractère) et une pour le texte courant (lisible, discrète). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================
+     1. VARIABLES CSS — la "palette" du site
+     On définit ici toutes les couleurs et polices une seule fois,
+     puis on les réutilise partout avec var(--nom). Si un jour vous
+     voulez changer une couleur, vous ne la changez qu'à UN endroit.
+     ============================================ */
+  :root {
+    --indigo: #16213E;       /* fond sombre, inspiré des teintures indigo */
+    --sable: #F6EFDD;        /* fond clair, couleur mil / sable */
+    --mil-or: #E3A72E;       /* jaune moutarde, tissu wax */
+    --piment: #D62828;       /* rouge piment / tomate, thiéboudienne */
+    --feuille: #3A5A40;      /* vert baobab, accents discrets */
+    --encre: #1A1A1A;        /* texte sur fond clair */
+
+    --police-titre: "Bricolage Grotesque", sans-serif;
+    --police-texte: "Work Sans", sans-serif;
+  }
+
+  /* Reset minimal : on enlève les marges par défaut du navigateur
+     pour partir sur une base propre et prévisible. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; } /* défilement doux quand on clique sur un lien #ancre */
+
+  body {
+    font-family: var(--police-texte);
+    color: var(--encre);
+    background: var(--sable);
+    line-height: 1.6;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  .conteneur {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ============================================
+     2. EN-TÊTE / NAVIGATION
+     ============================================ */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--indigo);
+    color: var(--sable);
+  }
+
+  .nav-barre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+  }
+
+  .logo-lien { display: flex; align-items: center; }
+  .logo-img {
+    height: 52px;
+    width: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .nav-liens {
+    display: flex;
+    gap: 32px;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .nav-liens a {
+    position: relative;
+    padding: 4px 0;
+  }
+  /* Petit soulignement animé au survol : ::after crée un élément
+     "fantôme" qu'on anime au lieu de toucher au texte lui-même. */
+  .nav-liens a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0; height: 2px;
+    background: var(--mil-or);
+    transition: width 0.25s ease;
+  }
+  .nav-liens a:hover::after { width: 100%; }
+
+  /* Bouton "burger" pour mobile, caché par défaut sur grand écran */
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .burger span {
+    width: 24px; height: 2px;
+    background: var(--sable);
+    display: block;
+  }
+
+  /* ============================================
+     3. MOTIF SIGNATURE — bande inspirée des tissus wax
+     Un dégradé répété en diagonale, utilisé comme séparateur
+     entre les sections. C'est l'élément visuel qu'on retrouve
+     partout : la "signature" du site.
+     ============================================ */
+  .bande-motif {
+    height: 14px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--mil-or) 0px, var(--mil-or) 14px,
+      var(--piment) 14px, var(--piment) 28px,
+      var(--feuille) 28px, var(--feuille) 42px
+    );
+  }
+
+  /* ============================================
+     4. HERO — la première chose que le visiteur voit
+     ============================================ */
+  .hero {
+    background: var(--indigo);
+    color: var(--sable);
+    padding: 100px 24px 90px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mil-or);
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-family: var(--police-titre);
+    font-weight: 800;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .hero p {
+    max-width: 560px;
+    margin: 0 auto 36px;
+    font-size: 1.1rem;
+    color: #D9D2C0;
+  }
+
+  .bouton {
+    display: inline-block;
+    background: var(--piment);
+    color: var(--sable);
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 999px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .bouton:hover {
+    background: #B81F1F;
+    transform: translateY(-2px);
+  }
+
+  /* ============================================
+     5. SECTION HISTOIRE
+     ============================================ */
+  .section {
+    padding: 80px 24px;
+  }
+
+  .section-titre {
+    font-family: var(--police-titre);
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 24px;
+  }
+
+  .histoire-grille {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .histoire-texte p { margin-bottom: 16px; color: #333; }
+
+  .histoire-visuel {
+    background: var(--mil-or);
+    border-radius: 20px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--police-titre);
+    font-weight: 800;
+    font-size: 5rem;
+    color: var(--indigo);
+  }
+
+  /* ============================================
+     6. MENU — présenté comme une vraie liste numérotée,
+     parce qu'un menu EST une séquence qu'on lit dans l'ordre.
+     ============================================ */
+  .menu-section {
+    background: var(--indigo);
+    color: var(--sable);
+  }
+  .menu-section .section-titre { color: var(--sable); }
+
+  .menu-categorie {
+    font-family: var(--police-titre);
+    color: var(--mil-or);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 40px 0 4px;
+  }
+  .menu-categorie:first-of-type { margin-top: 8px; }
+
+  .menu-liste { display: flex; flex-direction: column; margin-bottom: 12px; }
+
+  .plat-simple {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(246,239,221,0.15);
+    font-weight: 500;
+  }
+
+  .plat {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(246,239,221,0.15);
+  }
+
+  .plat-numero {
+    font-family: var(--police-titre);
+    color: var(--mil-or);
+    font-size: 1.1rem;
+  }
+
+  .plat-nom { font-weight: 600; font-size: 1.15rem; }
+  .plat-desc { color: #C7C0AE; font-size: 0.92rem; margin-top: 4px; }
+  .plat-prix { font-family: var(--police-titre); font-weight: 600; color: var(--mil-or); white-space: nowrap; }
+
+  /* ============================================
+     7. CONTACT / COMMANDE
+     ============================================ */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .tag {
+    background: var(--sable);
+    border: 1.5px solid var(--indigo);
+    color: var(--indigo);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+  }
+
+  .contact-grille {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .contact-carte {
+    background: white;
+    border: 2px solid var(--indigo);
+    border-radius: 20px;
+    padding: 32px;
+  }
+
+  .contact-carte h3 {
+    font-family: var(--police-titre);
+    margin-bottom: 12px;
+  }
+
+  .contact-ligne {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+  }
+
+  /* ============================================
+     8. PIED DE PAGE — mentions légales
+     ============================================ */
+  footer {
+    background: var(--encre);
+    color: #B9B9B9;
+    padding: 40px 24px 30px;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  footer a { color: var(--mil-or); }
+
+  /* ============================================
+     9. RESPONSIVE — adaptation mobile
+     Tout ce qui est ici ne s'applique QUE si l'écran fait
+     moins de 720px de large.
+     ============================================ */
+  @media (max-width: 720px) {
+    .nav-liens {
+      display: none;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: var(--indigo);
+      flex-direction: column;
+      gap: 0;
+      padding: 8px 24px 20px;
+    }
+    .nav-liens.ouvert { display: flex; }
+    .nav-liens a { padding: 12px 0; }
+    .burger { display: flex; }
+
+    .histoire-grille, .contact-grille {
+      grid-template-columns: 1fr;
+    }
+    .histoire-visuel { order: -1; font-size: 3.5rem; }
+  }
+
+  /* Accessibilité : on garde un contour visible au clavier,
+     très important et souvent oublié. */
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--mil-or);
+    outline-offset: 2px;
+  }
+
+  /* Respect des préférences "réduire les animations" */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ EN-TÊTE ============ -->
+  <header>
+    <div class="nav-barre conteneur">
+      <a href="#" class="logo-lien">
+        <img src="logo.jpg" alt="Logo SUNU GOUR'METS" class="logo-img">
+      </a>
+      <nav class="nav-liens" id="navLiens">
+        <a href="#histoire">Notre histoire</a>
+        <a href="#menu">Le menu</a>
+        <a href="#contact">Commander</a>
+      </nav>
+      <!-- Bouton menu mobile : le JS plus bas lui donne vie -->
+      <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="bande-motif"></div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-eyebrow">Service traiteur & pâtisserie sénégalaise à Nice</div>
+    <h1>Le goût du Sénégal,<br>fait maison.</h1>
+    <p>Un plat sénégalais différent chaque week-end, préparé sur commande, livré partout à Nice. Thiép, yassa, mafé... des recettes transmises avec authenticité et beaucoup d'amour.</p>
+    <a href="#menu" class="bouton">Découvrir le menu</a>
+  </section>
+
+  <div class="bande-motif"></div>
+
+  <!-- ============ HISTOIRE ============ -->
+  <section class="section" id="histoire">
+    <div class="conteneur histoire-grille">
+      <div class="histoire-texte">
+        <h2 class="section-titre">Notre histoire</h2>
+        <p>SUNU GOUR'METS est porté par Adja Ndoye et Mouhamed Diouf, avec une envie simple : partager les saveurs de la cuisine sénégalaise, celle des grands plats familiaux qui rassemblent autour d'une même assiette.</p>
+        <p>« Sunu » signifie « notre » en wolof. Chaque plat que nous préparons porte cet esprit de partage, à l'image de la cuisine sénégalaise elle-même.</p>
+        <p>Un plat sénégalais différent est proposé chaque week-end, pour une offre toujours variée. Tout est cuisiné sur commande, avec des produits frais et des épices sélectionnées avec soin.</p>
+      </div>
+      <div class="histoire-visuel">🍲</div>
+    </div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section class="section menu-section" id="menu">
+    <div class="conteneur">
+      <h2 class="section-titre">Le menu</h2>
+      <p style="color:#C7C0AE; margin-bottom:36px; max-width:520px;">Un plat sénégalais différent chaque week-end. Toute la carte reste disponible sur commande pour vos événements.</p>
+
+      <!-- Chaque catégorie est un petit bloc séparé : c'est plus lisible
+           qu'une seule grande liste, et ça reflète comment le menu est
+           vraiment organisé (plats / desserts / traiteur / boissons). -->
+
+      <h3 class="menu-categorie">Plats sénégalais — 10€ le plat</h3>
+      <div class="menu-liste">
+        <div class="plat-simple">Thiép Yap</div>
+        <div class="plat-simple">Thiép Guinar</div>
+        <div class="plat-simple">Yassa Poulet</div>
+        <div class="plat-simple">Yassa Dieune</div>
+        <div class="plat-simple">Domoda</div>
+        <div class="plat-simple">Mafé</div>
+        <div class="plat-simple">Soupoukandia</div>
+      </div>
+
+      <h3 class="menu-categorie">Desserts sénégalais</h3>
+      <div class="menu-liste">
+        <div class="plat-simple">Thiakry</div>
+        <div class="plat-simple">Galakh (Dégué)</div>
+      </div>
+
+      <h3 class="menu-categorie">Service traiteur — sur devis</h3>
+      <div class="menu-liste">
+        <div class="plat-simple">Pastels</div>
+        <div class="plat-simple">Pizza</div>
+        <div class="plat-simple">Mini pizzas</div>
+        <div class="plat-simple">Gâteaux</div>
+        <div class="plat-simple">Cakes</div>
+      </div>
+
+      <h3 class="menu-categorie">Boissons (1 litre)</h3>
+      <div class="menu-liste">
+        <div class="plat">
+          <span class="plat-numero">🥤</span>
+          <div class="plat-nom">Bissap</div>
+          <span class="plat-prix">8€</span>
+        </div>
+        <div class="plat">
+          <span class="plat-numero">🥤</span>
+          <div class="plat-nom">Bouy</div>
+          <span class="plat-prix">10€</span>
+        </div>
+        <div class="plat">
+          <span class="plat-numero">🥤</span>
+          <div class="plat-nom">Gingembre</div>
+          <span class="plat-prix">10€</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="bande-motif"></div>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section" id="contact">
+    <div class="conteneur">
+      <h2 class="section-titre">Commander</h2>
+
+      <!-- Les occasions sont juste des étiquettes, pas une séquence à lire
+           dans l'ordre : pas de numérotation ici, une simple liste de tags. -->
+      <div class="tags">
+        <span class="tag">Mariages</span>
+        <span class="tag">Anniversaires</span>
+        <span class="tag">Baptêmes</span>
+        <span class="tag">Réunions & repas de groupe</span>
+        <span class="tag">Événements associatifs</span>
+        <span class="tag">Événements professionnels</span>
+      </div>
+
+      <div class="contact-grille">
+        <div class="contact-carte">
+          <h3>Nous contacter</h3>
+          <div class="contact-ligne">
+            <a href="https://wa.me/33768667188" target="_blank">💬 WhatsApp — 07 68 66 71 88</a>
+          </div>
+          <div class="contact-ligne">📍 37, Avenue de la Bornala — Nice</div>
+          <div class="contact-ligne">🚚 Livraison à Nice, tous les week-ends</div>
+        </div>
+        <div class="contact-carte">
+          <h3>Notre affiche</h3>
+          <p style="margin-bottom:14px; font-size:0.92rem; color:#555;">Retrouvez toutes nos infos à partager :</p>
+          <img src="affiche.jpg" alt="Affiche SUNU GOUR'METS" style="border-radius:12px; border:2px solid var(--indigo);">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PIED DE PAGE ============ -->
+  <footer>
+    <p>© 2026 SUNU GOUR'METS — Tous droits réservés</p>
+    <p style="margin-top:8px;">
+      <a href="#">Mentions légales</a> · <a href="#">Politique de confidentialité</a>
+    </p>
+  </footer>
+
+  <script>
+    // ============================================
+    // JAVASCRIPT : une seule interaction ici, volontairement simple —
+    // ouvrir/fermer le menu de navigation sur mobile.
+    // ============================================
+    const burger = document.getElementById('burger');
+    const navLiens = document.getElementById('navLiens');
+
+    burger.addEventListener('click', () => {
+      const estOuvert = navLiens.classList.toggle('ouvert');
+      burger.setAttribute('aria-expanded', estOuvert);
+    });
+
+    // Bonus : on ferme le menu automatiquement après avoir cliqué
+    // sur un lien, pour ne pas laisser le menu ouvert sur mobile.
+    document.querySelectorAll('.nav-liens a').forEach(lien => {
+      lien.addEventListener('click', () => {
+        navLiens.classList.remove('ouvert');
+      });
+    });
+  </script>
+
+</body>
+</html>
